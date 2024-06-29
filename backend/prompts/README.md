@@ -1,0 +1,3 @@
+This is nitpicky, but the exact ages I coded in may be changed. For instance, it makes sense to scale the age of galaxies by the age of universe; most galaxies in our universe (13.8b years old) are estimated to be between 10b and 13.6b years old, so there's a strong bias towards the higher end of the range there. This is frankly not entirely necessary, but it will bug me if I don't make note of it.
+
+At minimum, however, the age of the parent will be passed in as the upper bound of the age - it'd be silly otherwise. This is accounted for in generic.txt, the generic form of the prompt that is hypothetically infinitely reusable.
