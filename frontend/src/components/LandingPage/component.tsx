@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Button } from "react95";
+import { getUniverse } from "../../services/universe/service";
 
 type Fields = {
   setMode: Dispatch<SetStateAction<number>>;

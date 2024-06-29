@@ -1,14 +1,24 @@
 import { Physics } from "@react-three/cannon";
 import { OrbitControls, Stars, Sphere } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { Button } from "react95";
+import { getUniverse } from "../../services/universe/service";
 
 type Fields = {
   setMode: Dispatch<SetStateAction<number>>;
 };
 
 const Universe = ({ setMode }: Fields) => {
+  const hydrateUniverse = async () => {
+    const results = getUniverse();
+    console.log(results);
+  };
+
+  useEffect(() => {
+    hydrateUniverse();
+  }, []);
+
   return (
     <div className="h-full w-full flex flex-col items-center p-6 gap-6">
       <div>G R O O V I V E R S E</div>
