@@ -1,28 +1,57 @@
 import { Physics } from "@react-three/cannon";
 import { OrbitControls, Stars, Sphere } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { Button } from "react95";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Button, Hourglass } from "react95";
 import { getUniverse } from "../../services/universe/service";
+import { UniverseOutputDto } from "./types";
+import { div } from "three/examples/jsm/nodes/Nodes.js";
 
 type Fields = {
   setMode: Dispatch<SetStateAction<number>>;
 };
 
 const Universe = ({ setMode }: Fields) => {
+  const [results, setResults] = useState<UniverseOutputDto | undefined>(
+    undefined
+  );
+
   const hydrateUniverse = async () => {
-    const results = getUniverse();
-    console.log(results);
+    const data = (await getUniverse()) as UniverseOutputDto;
+    // setResults(data);
   };
 
   useEffect(() => {
     hydrateUniverse();
   }, []);
 
+  if (!results) {
+    return (
+      <div className="flex flex-col items-center h-full w-full justify-evenly">
+        <Hourglass size={50} style={{ margin: 20 }} />
+        <Button
+          primary
+          onClick={() => {
+            setResults(undefined);
+            setMode(0);
+          }}
+        >
+          HOME
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full w-full flex flex-col items-center p-6 gap-6">
       <div>G R O O V I V E R S E</div>
-      <Button primary onClick={() => setMode(0)}>
+      <Button
+        primary
+        onClick={() => {
+          setResults(undefined);
+          setMode(0);
+        }}
+      >
         HOME
       </Button>
       <div className="h-full w-full bg-black">
