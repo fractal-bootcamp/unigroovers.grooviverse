@@ -1,0 +1,7 @@
+Generate a house with following properties: name, age, and size.
+The name will start with a random letter. The name need not be easy to pronounce. You are strongly encouraged to use non-English characters, but be sure the name is readable to English speakers. The name should not contain any substrings (length 4 or greater) that are valid English words.
+The age of the house should be a totally random number between 1 and 5000 with up to 2 decimal places. The unit must be years.
+The size of the house should be a totally random number between 100 and 100,000. The unit must be square feet.
+Please also provide a description of the house. Be sure to include some information on the history of the house, suggesting at a larger storyline. Do not make it sound like a realistic documentary.
+
+For context, this house belongs to a larger planet. Here's some information about that planet:

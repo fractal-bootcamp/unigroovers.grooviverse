@@ -1,0 +1,7 @@
+Generate a planet with following properties: name, age, and size.
+The name will start with a random letter. The name need not be easy to pronounce. You are strongly encouraged to use non-English characters, but be sure the name is readable to English speakers. The name should not contain any substrings (length 4 or greater) that are valid English words.
+The age of the planet should be a totally random number between 1 and 50 with up to 2 decimal places. The unit must be billions of years.
+The size of the planet should be a totally random number between 1,000 and 100,000. It may have up to 2 decimal places, and must have the unit "miles".
+Please also provide a description of the planet. Be sure to include some information on the history of the planet, suggesting at a larger storyline. Do not make it sound like a realistic documentary.
+
+For context, this planet belongs to a larger solar system. Here's some information about that solar system:
