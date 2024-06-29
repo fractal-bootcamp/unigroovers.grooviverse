@@ -14,8 +14,11 @@
     "typescript": "^5.5.2"
   },
   "dependencies": {
+    "@instructor-ai/instructor": "^1.5.0",
     "express": "^4.19.2",
     "nodemon": "^3.1.4",
-    "ts-node": "^10.9.2"
+    "openai": "^4.52.2",
+    "ts-node": "^10.9.2",
+    "zod": "^3.23.8"
   }
 }
