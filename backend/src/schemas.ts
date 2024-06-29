@@ -7,6 +7,8 @@ export const UniverseSchema = z.object({
   ageUnit: z.string(),
   dimensions: z.number().array(),
   dimensionsUnit: z.string(),
+  starCount: z.number(),
+  radius: z.number(),
 });
 
 export const GalaxySchema = z.object({
@@ -16,6 +18,8 @@ export const GalaxySchema = z.object({
   ageUnit: z.string(),
   dimensions: z.number().array(),
   dimensionsUnit: z.string(),
+  starCount: z.number(),
+  radius: z.number(),
 });
 
 export const SolarSystemSchema = z.object({
@@ -25,6 +29,7 @@ export const SolarSystemSchema = z.object({
   ageUnit: z.string(),
   dimensions: z.number().array(),
   dimensionsUnit: z.string(),
+  planetCount: z.number(),
 });
 
 export const PlanetSchema = z.object({
