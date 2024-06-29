@@ -1,6 +1,6 @@
 import Instructor from "@instructor-ai/instructor";
 import OpenAI from "openai";
-import { z } from "zod";
+import { z, ZodRawShape } from "zod";
 import readline from "readline";
 
 const oai = new OpenAI({
@@ -12,9 +12,9 @@ const client = Instructor({
   mode: "TOOLS",
 });
 
-export const promptWithSchema = async (
+export const promptWithSchema = async <T extends ZodRawShape>(
   prompt: string,
-  schema: z.ZodObject<any>
+  schema: z.ZodObject<T>
 ) => {
   try {
     const response = await client.chat.completions.create({
@@ -40,14 +40,24 @@ const askQuestion = (question: string) => {
   return new Promise((resolve) => rl.question(question, resolve));
 };
 
-const generateUniverse = async () => {
-  try {
-    const givenName = await askQuestion("Whats the name of your Universe? ");
-    const givenInfo = await askQuestion(
-      "Anthing you'd like us to know about your universe? "
-    );
+export const UniverseSchema = z.object({
+  name: z.string(),
+  id: z.string(),
+  age: z.number(),
+  ageUnit: z.string(),
+  dimensions: z.number().array(),
+  dimensionsUnit: z.string(),
 
-    const UniverseSchema = z.object({
+  //galaxy of this universe
+  galaxy: z.object({
+    name: z.string(),
+    id: z.string(),
+    age: z.number(),
+    ageUnit: z.string(),
+    dimensions: z.number().array(),
+    dimensionsUnit: z.string(),
+
+    solarsystem: z.object({
       name: z.string(),
       id: z.string(),
       age: z.number(),
@@ -55,35 +65,27 @@ const generateUniverse = async () => {
       dimensions: z.number().array(),
       dimensionsUnit: z.string(),
 
-      //galaxy of this universe
-      galaxy: z.object({
+      //planet in this solar system
+      planet: z.object({
         name: z.string(),
         id: z.string(),
         age: z.number(),
         ageUnit: z.string(),
-        dimensions: z.number().array(),
+        dimensions: z.array(z.number()),
         dimensionsUnit: z.string(),
-
-        solarsystem: z.object({
-          name: z.string(),
-          id: z.string(),
-          age: z.number(),
-          ageUnit: z.string(),
-          dimensions: z.number().array(),
-          dimensionsUnit: z.string(),
-
-          //planet in this solar system
-          planet: z.object({
-            name: z.string(),
-            id: z.string(),
-            age: z.number(),
-            ageUnit: z.string(),
-            dimensions: z.array(z.number()),
-            dimensionsUnit: z.string(),
-          }),
-        }),
       }),
-    });
+    }),
+  }),
+});
+
+export const GalaxySchema = z.object({});
+
+export const generateUniverseDescription = async (prompt: string) => {
+  try {
+    const givenName = await askQuestion("Whats the name of your Universe? ");
+    const givenInfo = await askQuestion(
+      "Anthing you'd like us to know about your universe? "
+    );
 
     const universeDescriptionSchema = z
       .object({
@@ -103,10 +105,7 @@ const generateUniverse = async () => {
         "A detailed overview of the universe description. It should be realistic and reflect the actual statistics, metrics, and history of a universe."
       );
 
-    const universe = await promptWithSchema(
-      `Generate a Universe with realistic metrics for a Universe for ${givenName} based on the ${givenInfo}. The age and dimensions of each element should realistic based on actual universe, galaxy, solary system, and planet metrics. This means the  universe should be much larger and older than the galaxy, galaxies should be larger and older than solar systems. Solar Systems should be larger and older than planets. Universes should be in parsecs, galaxies in light years, solar system in lightyears, planets in Kilometers.`,
-      UniverseSchema
-    );
+    const universe = await promptWithSchema(prompt, UniverseSchema);
 
     if (universe) {
       const universeSequence = await promptWithSchema(
@@ -122,55 +121,6 @@ const generateUniverse = async () => {
         });
       }
 
-      console.log("*********** DESCRIPTION *************");
-      console.log("  ");
-      console.log("************* UNIVERSE STATS **************");
-      console.log("Name: " + universe.name);
-      console.log("ID: " + universe.id);
-      console.log("Age:   " + universe.age);
-      console.log("Age Unit: " + universe.ageUnit);
-      console.log("Dimensions: " + universe.dimensions);
-      console.log("Dimension Unit: " + universe.dimensionsUnit);
-      console.log("************* UNIVERSE STATS **************");
-
-      const galaxy = universe.galaxy;
-      console.log("  ");
-      console.log("************* GALAXY STATS **************");
-      console.log("GalaxyID: " + galaxy.id);
-      console.log("Galaxy Name: " + galaxy.name);
-      console.log("Galaxy Age: " + galaxy.age);
-      console.log("Galaxy Age Unit: " + galaxy.ageUnit);
-      console.log("Galaxy Dimensions: " + galaxy.dimensions);
-      console.log("Galaxy Dimension: " + galaxy.dimensionsUnit);
-      console.log("************* GALAXY STATS **************");
-      console.log("  ");
-
-      const solarsystem = galaxy.solarsystem;
-      console.log("  ");
-      console.log("************* SOLARSYSTEM STATS **************");
-      console.log("solarsystemID: " + solarsystem.id);
-      console.log("solarsystem Name: " + solarsystem.name);
-      console.log("solarsystem Age: " + solarsystem.age);
-      console.log("Solar System Age Unit: " + solarsystem.ageUnit);
-      console.log("solarsystem Dimensions: " + solarsystem.dimensions);
-      console.log(
-        "Solar System Dimenisons Unit: " + solarsystem.dimensionsUnit
-      );
-      console.log("************* SOLARSYSTEM STATS **************");
-      console.log("  ");
-
-      const planet = solarsystem.planet;
-      console.log("  ");
-      console.log("************* PLANET STATS **************");
-      console.log("PlanetID: " + planet.id);
-      console.log("Planet Name: " + planet.name);
-      console.log("Planet Age: " + planet.age);
-      console.log("Planet Age Unit: " + planet.ageUnit);
-      console.log("Planet Dimensions: " + planet.dimensions);
-      console.log("planet Age Unit: " + planet.dimensionsUnit);
-      console.log("************* PLANET STATS **************");
-      console.log("  ");
-
       return universe;
     }
   } catch (error) {
@@ -180,6 +130,15 @@ const generateUniverse = async () => {
   }
 };
 
-export async function main() {
-  const universe = await generateUniverse();
-}
+export const generateUniverse = async (prompt: string) => {
+  try {
+    const universe = await promptWithSchema(prompt, UniverseSchema);
+    return universe;
+  } catch (error) {
+    console.error("Error:", error);
+  } finally {
+    rl.close();
+  }
+};
+
+//`Generate a Universe with realistic metrics for a Universe for ${givenName} based on the ${givenInfo}. The age and dimensions of each element should realistic based on actual universe, galaxy, solary system, and planet metrics. This means the  universe should be much larger and older than the galaxy, galaxies should be larger and older than solar systems. Solar Systems should be larger and older than planets. Universes should be in parsecs, galaxies in light years, solar system in lightyears, planets in Kilometers.`,
