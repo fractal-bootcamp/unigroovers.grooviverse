@@ -1,42 +1,36 @@
 import { Request, Response } from "express";
 import { promptWithSchema } from "../../src/generate";
-import { GalaxySchema, HouseSchema, PlanetSchema, SolarSystemSchema, UniverseSchema } from "../../src/schemas";
-import { PromptFnArgs, galaxyPrompt, housePrompt, planetPrompt, solarSystemPrompt, universePrompt } from "../../src/prompt";
+import { GalaxySchema, SolarSystemSchema, UniverseSchema } from "../../src/schemas";
+import { PromptFnArgs, galaxyPrompt, solarSystemPrompt, universePrompt } from "../../src/prompt";
 import { UniverseOutputDto } from "./types";
 
 export async function getUniverseController(req: Request, res: Response): Promise<void> {
-  const universePromptArgs: PromptFnArgs = {ageMin: 1, ageMax: 10000, sizeMin: 100000, sizeMax: 10000000};
+  const density = 750;  // 750 stars per 1 radius
+
+  const universeRadius = 1000000;
+  const universeStars = universeRadius * density;
+  const universePromptArgs: PromptFnArgs = {radiusMin: universeRadius * 0.95, radiusMax: universeRadius * 1.05, bodiesMin: universeStars * 0.95, bodiesMax: universeStars * 1.05};
   const universe = await promptWithSchema(universePrompt(universePromptArgs), UniverseSchema);
   if (universe === undefined) {
     res.json({message: "There was an error generating a universe."});
     return;
   }
 
-  const galaxyPromptArgs: PromptFnArgs = {ageMin: 1, ageMax: universe.age / 2, sizeMin: universe.dimensions[0] / 1000, sizeMax: universe.dimensions[0] / 1000};
+  const galaxyRadius = universe.radius / 15;
+  const galaxyStars = galaxyRadius * density;
+  const galaxyPromptArgs: PromptFnArgs = {radiusMin: galaxyRadius * .95, radiusMax: galaxyRadius * 1.05, bodiesMin: galaxyStars * 0.95, bodiesMax: galaxyStars * 1.05};
   const galaxy = await promptWithSchema(galaxyPrompt(galaxyPromptArgs), GalaxySchema);
   if (galaxy === undefined) {
     res.json({message: "There was an error generating a galaxy."});
     return;
   }
 
-  const solarSystemPromptArgs: PromptFnArgs = {ageMin: 1, ageMax: galaxy.age / 2, sizeMin: galaxy.dimensions[0] / 1000, sizeMax: galaxy.dimensions[0] / 1000};
+  const solarSystemRadius = galaxy.radius / 15;
+  const solarSystemStars = solarSystemRadius * density;
+  const solarSystemPromptArgs: PromptFnArgs = {radiusMin: solarSystemRadius * .95, radiusMax: solarSystemRadius * 1.05, bodiesMin: solarSystemStars * 0.95, bodiesMax: solarSystemStars * 1.05};
   const solarSystem = await promptWithSchema(solarSystemPrompt(solarSystemPromptArgs), SolarSystemSchema);
   if (solarSystem === undefined) {
-    res.json({message: "There was an error generating a galaxy."});
-    return;
-  }
-
-  const planetPromptArgs: PromptFnArgs = {ageMin: 1, ageMax: 100, sizeMin: 1000, sizeMax: 100000};
-  const planet = await promptWithSchema(planetPrompt(planetPromptArgs), PlanetSchema);
-  if (planet === undefined) {
-    res.json({message: "There was an error generating a galaxy."});
-    return;
-  }
-
-  const housePromptArgs: PromptFnArgs = {ageMin: 1, ageMax: 5000, sizeMin: 100, sizeMax: 100000};
-  const house = await promptWithSchema(housePrompt(housePromptArgs), HouseSchema);
-  if (house === undefined) {
-    res.json({message: "There was an error generating a galaxy."});
+    res.json({message: "There was an error generating a solar system."});
     return;
   }
 
@@ -46,13 +40,7 @@ export async function getUniverseController(req: Request, res: Response): Promis
     galaxy: {
       ...galaxy,
       solarSystem: {
-        ...solarSystem,
-        planet: {
-          ...planet,
-          house: {
-            ...house
-          }
-        }
+        ...solarSystem
       }
     }
   }

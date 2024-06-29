@@ -2,20 +2,15 @@ import { CompletionMeta } from "@instructor-ai/instructor";
 
 type UniverseEntity = {
   name: string;
-  id: string;
-  age: number;
-  ageUnit: string;
-  dimensions: number[];
-  dimensionsUnit: string;
-  _meta?: CompletionMeta;
+  radius: number;
+  starCount: number;
 }
 
 export type UniverseOutputDto = UniverseEntity & {
   galaxy: UniverseEntity & {
-    solarSystem: UniverseEntity & {
-      planet: UniverseEntity & {
-        house: UniverseEntity
-      }
+    solarSystem: {
+      name: string;
+      planetCount: number;
     }
   }
 }
