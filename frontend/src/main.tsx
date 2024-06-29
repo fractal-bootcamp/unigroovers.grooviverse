@@ -1,16 +1,8 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 
-import { Physics, useBox } from "@react-three/cannon";
-import {
-  OrbitControls,
-  Stars,
-  Box,
-  Dodecahedron,
-  Ring,
-  Sphere,
-} from "@react-three/drei";
+import { Physics } from "@react-three/cannon";
+import { OrbitControls, Stars, Sphere } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
