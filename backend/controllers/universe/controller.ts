@@ -1,36 +1,72 @@
 import { Request, Response } from "express";
 import { promptWithSchema } from "../../src/generate";
-import { GalaxySchema, SolarSystemSchema, UniverseSchema } from "../../src/schemas";
-import { PromptFnArgs, galaxyPrompt, solarSystemPrompt, universePrompt } from "../../src/prompt";
+import {
+  GalaxySchema,
+  SolarSystemSchema,
+  UniverseSchema,
+} from "../../src/schemas";
+import {
+  PromptFnArgs,
+  galaxyPrompt,
+  solarSystemPrompt,
+  universePrompt,
+} from "../../src/prompt";
 import { UniverseOutputDto } from "./types";
 
-export async function getUniverseController(req: Request, res: Response): Promise<void> {
-  const density = 750;  // 750 stars per 1 radius
+export async function getUniverseController(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const density = 750; // 750 stars per 1 radius
 
-  const universeRadius = 1000000;
+  const universeRadius = 150;
   const universeStars = universeRadius * density;
-  const universePromptArgs: PromptFnArgs = {radiusMin: universeRadius * 0.95, radiusMax: universeRadius * 1.05, bodiesMin: universeStars * 0.95, bodiesMax: universeStars * 1.05};
-  const universe = await promptWithSchema(universePrompt(universePromptArgs), UniverseSchema);
+  const universePromptArgs: PromptFnArgs = {
+    radiusMin: universeRadius * 0.95,
+    radiusMax: universeRadius * 1.05,
+    bodiesMin: universeStars * 0.95,
+    bodiesMax: universeStars * 1.05,
+  };
+  const universe = await promptWithSchema(
+    universePrompt(universePromptArgs),
+    UniverseSchema
+  );
   if (universe === undefined) {
-    res.json({message: "There was an error generating a universe."});
+    res.json({ message: "There was an error generating a universe." });
     return;
   }
 
   const galaxyRadius = universe.radius / 15;
   const galaxyStars = galaxyRadius * density;
-  const galaxyPromptArgs: PromptFnArgs = {radiusMin: galaxyRadius * .95, radiusMax: galaxyRadius * 1.05, bodiesMin: galaxyStars * 0.95, bodiesMax: galaxyStars * 1.05};
-  const galaxy = await promptWithSchema(galaxyPrompt(galaxyPromptArgs), GalaxySchema);
+  const galaxyPromptArgs: PromptFnArgs = {
+    radiusMin: galaxyRadius * 0.95,
+    radiusMax: galaxyRadius * 1.05,
+    bodiesMin: galaxyStars * 0.95,
+    bodiesMax: galaxyStars * 1.05,
+  };
+  const galaxy = await promptWithSchema(
+    galaxyPrompt(galaxyPromptArgs),
+    GalaxySchema
+  );
   if (galaxy === undefined) {
-    res.json({message: "There was an error generating a galaxy."});
+    res.json({ message: "There was an error generating a galaxy." });
     return;
   }
 
   const solarSystemRadius = galaxy.radius / 15;
   const solarSystemStars = solarSystemRadius * density;
-  const solarSystemPromptArgs: PromptFnArgs = {radiusMin: solarSystemRadius * .95, radiusMax: solarSystemRadius * 1.05, bodiesMin: 5, bodiesMax: 12};
-  const solarSystem = await promptWithSchema(solarSystemPrompt(solarSystemPromptArgs), SolarSystemSchema);
+  const solarSystemPromptArgs: PromptFnArgs = {
+    radiusMin: solarSystemRadius * 0.95,
+    radiusMax: solarSystemRadius * 1.05,
+    bodiesMin: 5,
+    bodiesMax: 12,
+  };
+  const solarSystem = await promptWithSchema(
+    solarSystemPrompt(solarSystemPromptArgs),
+    SolarSystemSchema
+  );
   if (solarSystem === undefined) {
-    res.json({message: "There was an error generating a solar system."});
+    res.json({ message: "There was an error generating a solar system." });
     return;
   }
 
@@ -40,10 +76,9 @@ export async function getUniverseController(req: Request, res: Response): Promis
     galaxy: {
       ...galaxy,
       solarSystem: {
-        ...solarSystem
-      }
-    }
-  }
+        ...solarSystem,
+      },
+    },
+  };
   res.json(output);
-
 }
