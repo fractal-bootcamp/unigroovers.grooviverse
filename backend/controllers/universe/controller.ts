@@ -27,7 +27,7 @@ export async function getUniverseController(req: Request, res: Response): Promis
 
   const solarSystemRadius = galaxy.radius / 15;
   const solarSystemStars = solarSystemRadius * density;
-  const solarSystemPromptArgs: PromptFnArgs = {radiusMin: solarSystemRadius * .95, radiusMax: solarSystemRadius * 1.05, bodiesMin: solarSystemStars * 0.95, bodiesMax: solarSystemStars * 1.05};
+  const solarSystemPromptArgs: PromptFnArgs = {radiusMin: solarSystemRadius * .95, radiusMax: solarSystemRadius * 1.05, bodiesMin: 5, bodiesMax: 12};
   const solarSystem = await promptWithSchema(solarSystemPrompt(solarSystemPromptArgs), SolarSystemSchema);
   if (solarSystem === undefined) {
     res.json({message: "There was an error generating a solar system."});
