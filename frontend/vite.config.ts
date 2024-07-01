@@ -9,13 +9,5 @@ export default ({ mode }: ConfigEnv) => {
       "process.env.API_URL": JSON.stringify(env.API_URL),
     },
     plugins: [react()],
-    server: {
-      proxy: {
-        "/": {
-          target: env.API_URL,
-          changeOrigin: true,
-        },
-      },
-    },
   });
 };
