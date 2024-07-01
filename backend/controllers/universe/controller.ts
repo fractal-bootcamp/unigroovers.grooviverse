@@ -14,7 +14,7 @@ import {
 import { UniverseOutputDto } from "./types";
 
 export async function getUniverseController(
-  req: Request,
+  _req: Request,
   res: Response
 ): Promise<void> {
   const density = 750; // 750 stars per 1 radius
@@ -54,7 +54,6 @@ export async function getUniverseController(
   }
 
   const solarSystemRadius = galaxy.radius / 15;
-  const solarSystemStars = solarSystemRadius * density;
   const solarSystemPromptArgs: PromptFnArgs = {
     radiusMin: solarSystemRadius * 0.95,
     radiusMax: solarSystemRadius * 1.05,
