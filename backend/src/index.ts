@@ -10,7 +10,7 @@ const prompt: string =
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://grooviverse.onrender.com"],
 
     allowedHeaders: ["Content-Type"],
   })
